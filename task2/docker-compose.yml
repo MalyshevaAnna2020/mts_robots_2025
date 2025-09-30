@@ -1,0 +1,53 @@
+services:
+  demo-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: demo-client
+    ports:
+      - "5600:5600"      # телеметрия TCP/UDP
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # адрес хоста, куда отправлять команды:
+      - CMD_HOST=host.docker.internal # для windows/mac
+      # - TEL_HOST=127.0.0.1            # linux
+      - CMD_PORT=5555
+
+      # адрес, на котором клиент слушает телеметрию:
+      - TEL_HOST=0.0.0.0              # для windows/mac
+      # - TEL_HOST=127.0.0.1            # linux
+
+      - TEL_PORT=5600
+      - PROTO=tcp
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ros2 run controller controller
+    # command: python3 demo.py
+
+  # turtle_sim:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: turtle_sim
+  #   environment:
+  #     - DISPLAY=${DISPLAY}
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  #   stdin_open: true
+  #   tty: true
+  #   command: ros2 run turtlesim turtlesim_node
+
+  # talker:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: talker
+  #   environment:
+  #     - DISPLAY=${DISPLAY}
+  #   volumes:
+  #     - /tmp/.X11-unix:/tmp/.X11-unix:rw
+  #   stdin_open: true
+  #   tty: true
+  #   command: ros2 run talker talker

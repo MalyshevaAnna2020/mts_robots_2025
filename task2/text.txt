@@ -1,0 +1,30 @@
+// Собираем контейнер
+sudo docker build -t my-ros-app .
+
+// Запускаем его образ
+sudo docker-compose up
+
+// Открываем в новом терминале тот же образ под названием turtlesim_gui
+// (turtlesim_gui нужно заменить на настоящее имя,
+// которое можно узнать с помощью команды 
+// sudo docker ps)
+sudo docker exec -it turtlesim_gui bash
+
+
+// Полностью пересобрать
+# 1. Остановить и удалить контейнеры
+docker compose down --remove-orphans --volumes
+
+# 2. Удалить образы (опционально)
+docker rmi $(docker images -q)
+
+# 3. Пересобрать без кэша
+docker compose build --no-cache
+
+# 4. Запустить
+docker-compose up
+
+
+// Права доступа
+sudo usermod -aG docker $USER
+newgrp docker
