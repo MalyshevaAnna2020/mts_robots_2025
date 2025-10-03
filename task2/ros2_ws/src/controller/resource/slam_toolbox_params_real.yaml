@@ -1,0 +1,143 @@
+slam_toolbox:
+  ros__parameters:
+    # Вес штрафа за несоответствие углов при сопоставлении
+    angle_variance_penalty: 1.0
+    # Фрейм робота
+    base_frame: base_link
+    # Еще есть SUBSPACE_DOGLEG. Альтернатива ceres_trust_strategy. 
+    # Чтобы применить, надо установить ceres_trust_strategy: DOGLEG
+    ceres_dogleg_type: TRADITIONAL_DOGLEG
+    # Эффективен для разреженных матриц (типично для SLAM)?
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY
+    # Функция потерь для подавления выбросов (можно None, Huber, Cauchy)
+    ceres_loss_function: HuberLoss 
+    ceres_preconditioner: JACOBI
+    # Levenberg-Marquardt 
+    ceres_trust_strategy: LM 
+    # Примерно 2°. Шаг угла при грубом поиске. Меньше - точнее, но медленнее
+    coarse_angle_resolution: 0.01745 # 0.0349 
+    # Диапазон грубого поиска: ±20° от текущей оценки?
+    coarse_search_angle_offset: 0.349 
+    # Размер квадратной области (в метрах) вокруг текущей позы для поиска соответствий
+    correlation_search_space_dimension: 1.0 
+    # Шаг поиска по x/y (1 см). Мельче → точнее, но дороже
+    correlation_search_space_resolution: 0.01 
+    # "Размытие" сканов при корреляции (уменьшает шум)
+    correlation_search_space_smear_deviation: 0.1 
+    # Включить подробный лог (может сильно замедлить работу)
+    debug_logging: false 
+    # Вес штрафа за несоответствие расстояний
+    distance_variance_penalty: 0.5
+    # Включает коррекцию траектории при обнаружении замыкания петли 
+    do_loop_closing: true 
+    # Включает возможность вручную корректировать позу через RViz (требует плагина)
+    enable_interactive_mode: false 
+    # Диапазон точного поиска после грубого
+    fine_search_angle_offset: 0.001745 # 0.00349 
+    # Устаревший параметр (игнорируется в новых версиях)
+    interactive_mode: false 
+    # ?
+    link_match_minimum_response_fine: 0.3
+    # Макс. расстояние до точки в скане, используемой для сопоставления
+    link_scan_maximum_distance: 1.0 
+    # ?
+    loop_match_maximum_variance_coarse: 3.0
+    # Мин. число сканов в цепочке для попытки loop closing
+    loop_match_minimum_chain_size: 10 
+    # Порог корреляции для грубого сопоставления. Чем выше — тем строже
+    loop_match_minimum_response_coarse: 0.35 
+    # Порог корреляции для точного сопоставления. Чем выше — тем строже
+    loop_match_minimum_response_fine: 0.6 
+    # Макс. расстояние (в метрах), в пределах которого ищутся возможные петли
+    loop_search_maximum_distance: 3.0 
+    # Тем шире область поиска петель (но дороже вычисления). Чем отличается от предыдущего параметра?
+    loop_search_space_dimension: 8.0 
+    # ?
+    loop_search_space_resolution: 0.05
+    # ?
+    loop_search_space_smear_deviation: 0.03
+    # Имя файла при загрузке/сохранении карты. 
+    # Если пусто — используется имя по умолчанию
+    # map_file_name: map
+    # Фрейм карты
+    map_frame: map 
+    # Топик карты
+    map_name: /map 
+    # Используется, если робот стартует с док-станции (требует специальной настройки)?
+    map_start_at_dock: false 
+    # Надо ли сделать [0.0, 0.0, 0.0]?
+    map_start_pose: [0.0, 0.0, 0.0]
+    # Интервал обновления карты (в секундах)
+    map_update_interval: 0.5 
+    # Мин. число сканов, которые должны "пройти" фильтрацию, 
+    # чтобы добавить новую позу
+    min_pass_through: 2 
+    # Мин. "качество" угла для принятия соответствия
+    minimum_angle_penalty: 0.9 
+    # Мин. "качество" расстояния
+    minimum_distance_penalty: 0.05 
+    # ?
+    minimum_time_interval: 0.5
+    # Мин. перемещение (в метрах), чтобы добавить новый скан в карту
+    minimum_travel_distance: 0.05
+    # Мин. поворот в радианах, чтобы добавить новый скан 
+    minimum_travel_heading: 0.05 
+    # Режим: mapping (построение карты) 
+    # или localization (локализация на существующей карте)
+    mode: mapping
+    # Порог вероятности, при котором ячейка считается "занятой"
+    occupancy_threshold: 0.1 
+    # Фрейм одометрии
+    odom_frame: odom 
+    # Приостановить обработку новых данных (для отладки)?
+    paused_new_measurements: false 
+    # Приостановить обработку новых данных (для отладки)?
+    paused_processing: false 
+    # Масштаб ковариации позы в выходной оценке (/pose и TF)
+    position_covariance_scale: 1.0 
+    # Переопределение QoS-политик для трансляции TF
+    qos_overrides./tf.publisher.depth: 100 # буфер на 100 сообщений
+    qos_overrides./tf.publisher.durability: volatile # не хранить старые сообщения
+    qos_overrides./tf.publisher.history: keep_last
+    qos_overrides./tf.publisher.reliability: reliable # гарантирует доставку (важно для TF!)
+    # Разрешение карты в метрах на пиксель
+    resolution: 0.025 
+    # Макс. расстояние точек в скане, которые учитываются. 
+    # Точки дальше — игнорируются
+    # Должно быть меньше максимального расстояния луча (это 8 метров)
+    scan_buffer_maximum_scan_distance: 7.5
+    # Сколько сканов хранится в буфере для обработки
+    scan_buffer_size: 10 
+    # Размер очереди входящих сканов. 
+    # 1 — обрабатывать только последний скан (хорошо при высокой частоте)
+    scan_queue_size: 1
+    # Данные лидара
+    scan_topic: /scan 
+    # Используемый решатель
+    solver_plugin: solver_plugins::CeresSolver 
+    # Публиковать ROS 2 типы сообщений 
+    # (нужно для инструментов вроде ros2 topic echo)
+    start_type_description_service: true 
+    # Длительность буфера TF (в секундах)
+    tf_buffer_duration: 30.0 
+    # Каждый N-й скан используется (1 = все сканы)
+    throttle_scans: 1 
+    # Как часто публикуется TF map -> odom (10 Гц)
+    transform_publish_period: 0.1 
+    # Таймаут ожидания TF-трансформаций
+    transform_timeout: 0.5 
+    # Использовать lifecycle-ноды (обычно false для standalone SLAM)?
+    use_lifecycle_manager: false 
+    # Включает сервис /map_saver для сохранения карты 
+    # (ros2 run nav2_map_server map_saver_cli)
+    use_map_saver: true
+    # Расширяет область поиска, если корреляция слабая (улучшает робастность)
+    use_response_expansion: true 
+    # Центрировать сканы относительно центра масс (улучшает стабильность)?
+    use_scan_barycenter: true 
+    # Использовать сопоставление сканов для коррекции позы
+    use_scan_matching: true 
+    # Использовать симуляционное время (/clock). В реальном роботе — false
+    use_sim_time: false 
+    # Масштаб ковариации поворота в выходной оценке (/pose и TF)
+    yaw_covariance_scale: 1.0 
