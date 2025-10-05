@@ -9,8 +9,6 @@ import struct
 import math
 import os
 
-CMD_HOST = str(os.getenv("CMD_HOST", "127.0.0.1"))
-CMD_PORT = int(os.getenv("CMD_PORT", "5555"))
 TEL_HOST = str(os.getenv("TEL_HOST", "0.0.0.0"))
 TEL_PORT = int(os.getenv("TEL_PORT", "5600"))
 PROTO = str(os.getenv("PROTO", "tcp"))
@@ -34,8 +32,6 @@ class TelemetryBridge(Node):
 
         # self.publish_static_lidar_transform()
 
-        self.sock_cmd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
         if PROTO == "udp":
             self.sock_tel = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             self.sock_tel.bind((TEL_HOST, TEL_PORT))
@@ -49,8 +45,7 @@ class TelemetryBridge(Node):
             self.sock_tel = conn
             self.get_logger().info("Connected to Webots telemetry")
 
-        self.timer = self.create_timer(0.1, self.read_telemetry)  # 100 Hz
-        self.timer = self.create_timer(0.1, self.start_build_map)
+        self.timer = self.create_timer(0.1, self.read_telemetry)
 
         self.scan_msg = LaserScan()
         self.scan_msg.header.frame_id = 'lidar_link'
@@ -73,16 +68,6 @@ class TelemetryBridge(Node):
         t.transform.rotation = q
         self.tf_broadcaster.sendTransform(t)
 
-    def send_cmd(self, v: float, w: float):
-        # self.get_logger().info(f"send_cmd v={v:.2f}, w={w:.2f}")
-        packet = struct.pack("<2f", v, w)
-        self.sock_cmd.sendto(packet, (CMD_HOST, CMD_PORT))
-
-    def start_build_map(self):
-        t = self.get_clock().now().nanoseconds / 1e9
-        v = 0.3*math.sin(0.5*t)
-        w = 0.1
-        self.send_cmd(v, w)
 
     def recv_all(self, size):
         buf = b""

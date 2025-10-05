@@ -24,6 +24,10 @@ setup(
     entry_points={
         'console_scripts': [
             "telemetry_bridge = controller.telemetry_bridge:main",
+            "auto_map_saver = controller.auto_map_saver:main",
+            "send_vel = controller.send_vel:main",
+            "amcl_init = controller.amcl_init:main",
+            "navigation_goal_sender = controller.navigation_goal_sender:main",
         ],
     },
 )

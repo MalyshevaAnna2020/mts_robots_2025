@@ -58,7 +58,7 @@ slam_toolbox:
     loop_search_space_smear_deviation: 0.03
     # Имя файла при загрузке/сохранении карты. 
     # Если пусто — используется имя по умолчанию
-    # map_file_name: map
+    # map_file_name: map.pgm
     # Фрейм карты
     map_frame: map 
     # Топик карты
@@ -84,7 +84,7 @@ slam_toolbox:
     minimum_travel_heading: 0.05 
     # Режим: mapping (построение карты) 
     # или localization (локализация на существующей карте)
-    mode: mapping
+    mode: localization
     # Порог вероятности, при котором ячейка считается "занятой"
     occupancy_threshold: 0.1 
     # Фрейм одометрии
