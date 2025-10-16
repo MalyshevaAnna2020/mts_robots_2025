@@ -15,7 +15,8 @@ PROTO = str(os.getenv("PROTO", "tcp"))
 
 LIDAR_X = 0.0
 LIDAR_Y = 0.0
-LIDAR_Z = 0.031
+# LIDAR_Z = 0.031
+LIDAR_Z = 0.0
 LIDAR_YAW = 0.0
 
 
@@ -28,9 +29,9 @@ class TelemetryBridge(Node):
         self.imu_pub = self.create_publisher(Imu, 'imu', 10)
 
         self.tf_broadcaster = TransformBroadcaster(self)
-        # self.static_tf_broadcaster = StaticTransformBroadcaster(self)
+        self.static_tf_broadcaster = StaticTransformBroadcaster(self)
 
-        # self.publish_static_lidar_transform()
+        self.publish_static_lidar_transform()
 
         if PROTO == "udp":
             self.sock_tel = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -45,7 +46,7 @@ class TelemetryBridge(Node):
             self.sock_tel = conn
             self.get_logger().info("Connected to Webots telemetry")
 
-        self.timer = self.create_timer(0.1, self.read_telemetry)
+        self.timer = self.create_timer(0.033333333333, self.read_telemetry)
 
         self.scan_msg = LaserScan()
         self.scan_msg.header.frame_id = 'lidar_link'
@@ -66,7 +67,7 @@ class TelemetryBridge(Node):
         t.transform.translation.z = LIDAR_Z
         q = self.euler_to_quaternion(0, 0, LIDAR_YAW)
         t.transform.rotation = q
-        self.tf_broadcaster.sendTransform(t)
+        self.static_tf_broadcaster.sendTransform(t)
 
 
     def recv_all(self, size):
@@ -101,6 +102,8 @@ class TelemetryBridge(Node):
             if n > 0 and len(data) >= header_size + 4 + 4 * n:
                 ranges = struct.unpack(f"<{n}f", data[header_size + 4:header_size + 4 + 4 * n])
             # self.get_logger().info(f"len(ranges) = {len(ranges)}")
+            # это делается в параметрах slam_toolbox
+            # ranges = ranges[::3]
             filtered_ranges = []
             for r in ranges:
                 if r > self.scan_msg.range_max or r < self.scan_msg.range_min:
@@ -121,6 +124,7 @@ class TelemetryBridge(Node):
             q = self.euler_to_quaternion(0, 0, odom_th)
             odom.pose.pose.orientation = q
             odom.twist.twist.linear.x = vx
+            odom.twist.twist.linear.y = vy
             odom.twist.twist.angular.z = vth
             self.odom_pub.publish(odom)
 
@@ -134,7 +138,7 @@ class TelemetryBridge(Node):
             t.transform.translation.z = 0.0
             t.transform.rotation = q
             self.tf_broadcaster.sendTransform(t)
-            self.publish_static_lidar_transform()
+            # self.publish_static_lidar_transform()
 
             # === LiDAR ===
             if filtered_ranges:

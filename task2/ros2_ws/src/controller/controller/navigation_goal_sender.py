@@ -14,14 +14,15 @@ class NavigationGoalWithRetry(Node):
         # Параметры
         self.retry_delay_sec = 2.0  # секунды между попытками
         
-        self.goal_x = 0.0
-        self.goal_y = 2.0
+        self.goal_x = 4.0
+        self.goal_y = 4.0
         self.goal_theta = math.pi / 2
 
     def send_goal(self):
         if not self._action_client.wait_for_server(timeout_sec=10.0):
             self.get_logger().error('Сервер навигации недоступен!')
-            self.send_goal()
+            self.retry_timer = self.create_timer(self.retry_delay_sec, self.send_goal)
+            return
 
         goal_msg = NavigateToPose.Goal()
         goal_msg.pose.header.frame_id = 'map'

@@ -17,11 +17,11 @@ slam_toolbox:
     # Примерно 2°. Шаг угла при грубом поиске. Меньше - точнее, но медленнее
     coarse_angle_resolution: 0.01745 # 0.0349 
     # Диапазон грубого поиска: ±20° от текущей оценки?
-    coarse_search_angle_offset: 0.349 
+    coarse_search_angle_offset: 1.57
     # Размер квадратной области (в метрах) вокруг текущей позы для поиска соответствий
-    correlation_search_space_dimension: 1.0 
+    correlation_search_space_dimension: 3.0 
     # Шаг поиска по x/y (1 см). Мельче → точнее, но дороже
-    correlation_search_space_resolution: 0.01 
+    correlation_search_space_resolution: 0.05 
     # "Размытие" сканов при корреляции (уменьшает шум)
     correlation_search_space_smear_deviation: 0.1 
     # Включить подробный лог (может сильно замедлить работу)
@@ -33,7 +33,7 @@ slam_toolbox:
     # Включает возможность вручную корректировать позу через RViz (требует плагина)
     enable_interactive_mode: false 
     # Диапазон точного поиска после грубого
-    fine_search_angle_offset: 0.001745 # 0.00349 
+    fine_search_angle_offset: 0.0087 # 0.001745 # 0.00349 
     # Устаревший параметр (игнорируется в новых версиях)
     interactive_mode: false 
     # ?
@@ -43,15 +43,15 @@ slam_toolbox:
     # ?
     loop_match_maximum_variance_coarse: 3.0
     # Мин. число сканов в цепочке для попытки loop closing
-    loop_match_minimum_chain_size: 10 
+    loop_match_minimum_chain_size: 5 
     # Порог корреляции для грубого сопоставления. Чем выше — тем строже
     loop_match_minimum_response_coarse: 0.35 
     # Порог корреляции для точного сопоставления. Чем выше — тем строже
-    loop_match_minimum_response_fine: 0.6 
+    loop_match_minimum_response_fine: 0.5
     # Макс. расстояние (в метрах), в пределах которого ищутся возможные петли
-    loop_search_maximum_distance: 3.0 
+    loop_search_maximum_distance: 5.0 
     # Тем шире область поиска петель (но дороже вычисления). Чем отличается от предыдущего параметра?
-    loop_search_space_dimension: 8.0 
+    loop_search_space_dimension: 10.0 
     # ?
     loop_search_space_resolution: 0.05
     # ?
@@ -77,7 +77,7 @@ slam_toolbox:
     # Мин. "качество" расстояния
     minimum_distance_penalty: 0.05 
     # ?
-    minimum_time_interval: 0.5
+    minimum_time_interval: 0.03
     # Мин. перемещение (в метрах), чтобы добавить новый скан в карту
     minimum_travel_distance: 0.05
     # Мин. поворот в радианах, чтобы добавить новый скан 
