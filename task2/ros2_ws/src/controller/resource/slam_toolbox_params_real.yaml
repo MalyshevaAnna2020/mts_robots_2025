@@ -76,8 +76,8 @@ slam_toolbox:
     minimum_angle_penalty: 0.9 
     # Мин. "качество" расстояния
     minimum_distance_penalty: 0.05 
-    # ?
-    minimum_time_interval: 0.03
+    # Минимальный интервал между обработкой сканов (и одометриии, и tf?) (в секундах)
+    minimum_time_interval: 0.01
     # Мин. перемещение (в метрах), чтобы добавить новый скан в карту
     minimum_travel_distance: 0.05
     # Мин. поворот в радианах, чтобы добавить новый скан 

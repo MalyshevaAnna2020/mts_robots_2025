@@ -15,7 +15,7 @@ class AMCL_Init(Node):
         # Инициализация локализации amcl
         self.publisher_ = self.create_publisher(PoseWithCovarianceStamped, '/initialpose', 10)
         # Публикация начального положения (1 раз) с задержкой
-        timer_period = 10.0
+        timer_period = 5.0
         self.timer = self.create_timer(timer_period, self.publish_initial_pose)
 
     def publish_initial_pose(self):
@@ -24,8 +24,8 @@ class AMCL_Init(Node):
         pose_msg.header.stamp = self.get_clock().now().to_msg()
         pose_msg.header.frame_id = "map"
 
-        x = 0.5
-        y = 0.5
+        x = 0.0
+        y = 0.0
         yaw = 0.0
 
         from math import sin, cos

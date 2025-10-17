@@ -37,14 +37,14 @@ def generate_launch_description():
             # on_exit=Shutdown()
         ),
 
-        # Начальное положение робота
-        Node(
-            package='controller',
-            executable='amcl_init',
-            name='amcl_init',
-            output='screen',
-            # on_exit=Shutdown()
-        ),
+        # # Начальное положение робота
+        # Node(
+        #     package='controller',
+        #     executable='amcl_init',
+        #     name='amcl_init',
+        #     output='screen',
+        #     # on_exit=Shutdown()
+        # ),
 
         # Отправка цели (goal)
         Node(

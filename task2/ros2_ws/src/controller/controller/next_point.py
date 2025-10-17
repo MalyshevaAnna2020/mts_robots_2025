@@ -1,9 +1,9 @@
 from math import pi, sin, cos, atan2, tan
 
 LIDAR_STEP = pi / 180 / 4
-lidar = [] # Данные с лидара (/scan)
+# lidar = [] # Данные с лидара (/scan)
  
-def angles():
+def angles(lidar):
     """Calculate angles from lidar data"""
     d = 20
     angle_list = []
@@ -16,8 +16,13 @@ def angles():
         yl = lidar[i] * cos(al)
         xr = lidar[i - d] * sin(ar)
         yr = lidar[i - d] * cos(ar)
+        dy = yr - yl
+        dx = xr - xl
         
-        a = atan2(yr - yl, xr - xl)
+        if dy == 0 and dx == 0:
+            continue
+
+        a = atan2(dy, dx)
         if a < 0:
             a += 2 * pi
             
@@ -62,7 +67,7 @@ def find_break(lidar, direction):
     if direction < 0:
         start = len(lidar) - start - 1
     
-    diff = angles() / LIDAR_STEP
+    diff = angles(lidar) / LIDAR_STEP
     start -= diff
     
     current = lidar[int(start)]
@@ -89,13 +94,21 @@ def right_break(lidar):
  
 def left_break(lidar):
     return find_break(lidar, -1)
+
+# Тупик
+def dead_end(lidar):
+    dist = lidar[len(lidar) // 2]
+    return dist < 0.5 # 0.5 - это размер клетки
  
  
 def next_waypoint(lidar):
         rb, lb = (right_break(lidar), left_break(lidar))
-        print(f"breaks: R-{rb}, L-{lb}")
+        # print(f"breaks: R-{rb}, L-{lb}")
         if rb == 0 and lb == 0:
-            return (0, 0, pi/2)
+            # if dead_end(lidar):
+            #     return (-0.5, 0, pi/2)
+            # else:
+                return (0.5, 0, pi/2)
         elif rb > 0:
             return (rb * 0.5, 0, -pi/2)
         else:
